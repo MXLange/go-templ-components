@@ -1,0 +1,9 @@
+package assets
+
+import "strings"
+
+// Include carrega os assets. baseURL deve apontar para o Handler.
+templ Include(baseURL string) {
+	<link rel="stylesheet" href={ templ.URL(strings.TrimRight(baseURL, "/") + "/ui.css") }/>
+	<script src={ templ.URL(strings.TrimRight(baseURL, "/") + "/ui.js") } defer></script>
+}

@@ -1,0 +1,78 @@
+/* CSS do consumidor: fora de @layer para prevalecer sobre a biblioteca. */
+@font-face { font-family: "IBM Plex Sans"; src: url("/static/IBMPlexSans-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "IBM Plex Sans"; src: url("/static/IBMPlexSans-SemiBold.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+html { scroll-padding-top: 7rem; }
+body { margin: 0; background: var(--gtc-color-bg); color: var(--gtc-color-text); font-family: "IBM Plex Sans", "Segoe UI", sans-serif; font-size: 1rem; line-height: 1.6; }
+* { box-sizing: border-box; }
+.catalog-skip, .catalog-demo-nav a { color: var(--gtc-color-primary); }
+button, select, input, textarea { font-family: inherit; }
+:focus-visible { outline: 2px solid var(--gtc-color-primary); outline-offset: 3px; }
+.catalog-skip { position: fixed; inset: 0 auto auto 1rem; z-index: 200; transform: translateY(-150%); background: var(--gtc-color-surface); padding: 0.5rem 1rem; }
+.catalog-skip:focus { transform: none; }
+.catalog-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; min-height: 5rem; padding: 1rem 2rem; border-bottom: 1px solid var(--gtc-color-divider); background: var(--gtc-color-surface); }
+.catalog-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--gtc-color-text); font-weight: 600; }
+.catalog-brand-mark { display: inline-grid; place-items: center; width: 2rem; height: 2rem; background: var(--gtc-color-primary); color: var(--gtc-color-primary-text); font-family: monospace; font-size: 1.3rem; }
+.catalog-toolbar { display: flex; flex-wrap: wrap; gap: 1rem; }
+.catalog-toolbar label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--gtc-color-muted); }
+.catalog-toolbar select { min-height: 2.25rem; padding: 0.25rem 0.5rem; border: 1px solid var(--gtc-color-border); border-radius: var(--gtc-radius); background: var(--gtc-color-surface); color: var(--gtc-color-text); font-size: 0.875rem; }
+.catalog-layout { display: grid; grid-template-columns: 16rem minmax(0, 1fr); max-width: 100rem; margin-inline: auto; }
+.catalog-navigation { position: sticky; top: 0; align-self: start; max-height: 100dvh; overflow-y: auto; overscroll-behavior: contain; padding: 1.5rem 1rem; }
+.catalog-navigation > .gtc-button { width: 100%; margin-bottom: 1rem; }
+.catalog-navigation .gtc-sidebar { background: transparent; border: 0; padding: 0.5rem; }
+.catalog-navigation nav { display: grid; gap: 0.125rem; }
+.catalog-navigation nav a { padding: 0.5rem 0.75rem; text-decoration: none; color: var(--gtc-color-muted); font-size: 0.875rem; border-radius: var(--gtc-radius); }
+.catalog-navigation nav a:hover { background: var(--gtc-color-raised); color: var(--gtc-color-text); }
+.catalog-nav-title { padding-inline: 0.75rem; font-size: 0.6875rem; letter-spacing: 0.1em; font-weight: 600; color: var(--gtc-color-muted); }
+.catalog-version { padding: 1rem 0.75rem; color: var(--gtc-color-muted); font: 0.75rem monospace; }
+.catalog-main { min-width: 0; padding: 2.5rem clamp(1rem, 4vw, 4rem); border-left: 1px solid var(--gtc-color-divider); }
+.catalog-intro { margin-bottom: 3rem; }
+.catalog-intro h1 { margin: 1rem 0 0.5rem; font-size: clamp(1.75rem, 3vw, 2.5rem); letter-spacing: -0.025em; line-height: 1.2; font-weight: 600; }
+.catalog-intro p { margin: 0; color: var(--gtc-color-muted); }
+.catalog-section { padding-block: 2rem; border-top: 1px solid var(--gtc-color-divider); }
+.catalog-section h2 { margin: 0 0 1rem; font-size: 1.35rem; line-height: 1.4; font-weight: 600; letter-spacing: -0.015em; }
+.catalog-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.catalog-section-heading h2 { margin: 0; }
+.catalog-description { margin: -0.5rem 0 1.5rem; color: var(--gtc-color-muted); max-width: 65ch; }
+.catalog-example { border: 1px solid var(--gtc-color-divider); border-radius: var(--gtc-radius-large); background: var(--gtc-color-surface); padding: var(--gtc-panel-padding); }
+.catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.catalog-stack { display: grid; gap: 1.25rem; }
+.catalog-stack p { margin: 0; }
+.catalog-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.catalog-space-top { margin-top: 1.5rem; }
+.catalog-muted { color: var(--gtc-color-muted); }
+.catalog-dashboard { display: grid; grid-template-columns: minmax(12rem, 1fr) 2fr; background: var(--gtc-color-surface); border: 1px solid var(--gtc-color-divider); border-radius: var(--gtc-radius-large); }
+.catalog-dashboard-summary { padding: 1.75rem; border-right: 1px solid var(--gtc-color-divider); }
+.catalog-dashboard-summary > span { font-size: 0.6875rem; letter-spacing: 0.1em; color: var(--gtc-color-muted); font-weight: 600; }
+.catalog-dashboard-summary > strong { display: block; font: 500 4rem/1.2 "IBM Plex Mono", monospace; letter-spacing: -0.05em; }
+.catalog-dashboard-summary p { margin: 0.5rem 0 0; font-size: 0.8125rem; color: var(--gtc-color-muted); }
+.catalog-dashboard-activity { padding: 1.75rem; }
+.catalog-dashboard-activity h3 { margin: 0 0 1rem; font-size: 1rem; }
+.catalog-dashboard-activity p { margin: 0 0 0.75rem; font-size: 0.9375rem; }
+.catalog-code, .catalog-states { margin-top: 1rem; font-size: 0.875rem; }
+.catalog-code summary, .catalog-states summary { display: list-item; width: fit-content; cursor: pointer; color: var(--gtc-color-primary); min-height: 1.5rem; }
+.catalog-code pre, .catalog-css-example { max-width: 100%; overflow: auto; padding: 1rem; margin: 0.75rem 0 0; background: var(--gtc-color-raised); border: 1px solid var(--gtc-color-divider); border-radius: var(--gtc-radius); font-size: 0.8125rem; line-height: 1.7; }
+.catalog-activity { padding-left: 1.25rem; margin: 0; }
+.catalog-project-id { display: block; color: var(--gtc-color-muted); font: 0.75rem/1.5 monospace; }
+.catalog-demo-nav { display: flex; flex-wrap: wrap; gap: 1rem; }
+.catalog-demo-nav a { padding: 0.25rem; min-height: 1.5rem; }
+.catalog-footer { border-top: 1px solid var(--gtc-color-divider); padding-top: 1.5rem; color: var(--gtc-color-muted); font-size: 0.8125rem; }
+.catalog-editor-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-top: 1rem; }
+.catalog-editor-help { margin: 0.5rem 0 0; font-size: 0.875rem; }
+textarea.catalog-css-example { display: block; width: 100%; resize: vertical; color: var(--gtc-color-text); font-family: monospace; tab-size: 2; }
+@media (max-width: 800px) {
+  .catalog-header { padding: 1rem; }
+  .catalog-layout { grid-template-columns: minmax(0, 1fr); }
+  .catalog-navigation { position: static; max-height: none; overflow-y: visible; overscroll-behavior: auto; padding: 1rem; border-bottom: 1px solid var(--gtc-color-divider); }
+  .catalog-navigation nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .catalog-nav-title { grid-column: 1 / -1; }
+  .catalog-version { display: none; }
+  .catalog-main { border-left: 0; padding: 1.5rem 1rem; }
+  .catalog-grid, .catalog-dashboard { grid-template-columns: minmax(0, 1fr); }
+  .catalog-dashboard-summary { border-right: 0; border-bottom: 1px solid var(--gtc-color-divider); }
+}
+@media (max-width: 400px) {
+  .catalog-toolbar { gap: 0.5rem; }
+  .catalog-toolbar label { font-size: 0.8125rem; }
+  .catalog-toolbar select { max-width: 8rem; }
+  .catalog-navigation nav { grid-template-columns: minmax(0, 1fr); }
+}

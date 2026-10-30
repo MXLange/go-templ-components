@@ -1,0 +1,268 @@
+package ui
+
+import "cmp"
+import "fmt"
+
+templ Button(p ButtonProps) {
+	<button { buttonAttributes(p, nil)... }>
+		{ children... }
+	</button>
+}
+
+templ fieldHelp(p FieldProps, id string) {
+	if p.Description != "" {
+		<p class="gtc-field-description" id={ id + "-description" }>{ p.Description }</p>
+	}
+	if p.Error != "" {
+		<p class="gtc-field-error" id={ id + "-error" }>{ p.Error }</p>
+	}
+}
+
+templ Input(p InputProps) {
+	{{ id := componentID(p.ID) }}
+	<div class="gtc-field">
+		<label class="gtc-label" for={ id }>{ p.Label }</label>
+		<input { fieldAttributes(p.FieldProps, id, "gtc-input", templ.Attributes{"type": cmp.Or(p.Type, "text"), "value": p.Value, "placeholder": p.Placeholder, "autocomplete": p.Autocomplete})... }/>
+		@fieldHelp(p.FieldProps, id)
+	</div>
+}
+
+templ Textarea(p TextareaProps) {
+	{{ id := componentID(p.ID) }}
+	<div class="gtc-field">
+		<label class="gtc-label" for={ id }>{ p.Label }</label>
+		<textarea { fieldAttributes(p.FieldProps, id, "gtc-textarea", templ.Attributes{"rows": max(p.Rows, 3), "placeholder": p.Placeholder})... }>{ p.Value }</textarea>
+		@fieldHelp(p.FieldProps, id)
+	</div>
+}
+
+templ Checkbox(p CheckboxProps) {
+	{{ id := componentID(p.ID) }}
+	<div class="gtc-field">
+		<div class="gtc-checkbox-row">
+			<input { fieldAttributes(p.FieldProps, id, "gtc-checkbox", templ.Attributes{"type": "checkbox", "checked": p.Checked, "value": cmp.Or(p.Value, "on")})... }/>
+			<label class="gtc-label" for={ id }>{ p.Label }</label>
+		</div>
+		@fieldHelp(p.FieldProps, id)
+	</div>
+}
+
+templ Select(p SelectProps) {
+	{{ id := componentID(p.ID) }}
+	<div class="gtc-field">
+		<label class="gtc-label" for={ id }>{ p.Label }</label>
+		<select { fieldAttributes(p.FieldProps, id, "gtc-select", nil)... }>
+			for _, option := range p.Options {
+				<option value={ option.Value } selected?={ option.Value == p.Value } disabled?={ option.Disabled }>{ option.Label }</option>
+			}
+		</select>
+		@fieldHelp(p.FieldProps, id)
+	</div>
+}
+
+templ Card(p CardProps) {
+	<section { attributes(p.BaseProps, "gtc-card", nil)... }>
+		if p.Title != "" || p.Description != "" {
+			<header class="gtc-card-header">
+				if p.Title != "" {
+					<h3 class="gtc-card-title">{ p.Title }</h3>
+				}
+				if p.Description != "" {
+					<p class="gtc-card-description">{ p.Description }</p>
+				}
+			</header>
+		}
+		<div class="gtc-card-content">
+			{ children... }
+		</div>
+	</section>
+}
+
+templ Badge(p BadgeProps) {
+	<span { attributes(p.BaseProps, "gtc-badge", templ.Attributes{"data-gtc-tone": string(cmp.Or(p.Tone, ToneNeutral))})... }>
+		{ children... }
+	</span>
+}
+
+templ Alert(p AlertProps) {
+	<div { attributes(p.BaseProps, "gtc-alert", templ.Attributes{"role": "status", "data-gtc-tone": string(cmp.Or(p.Tone, ToneNeutral))})... }>
+		if p.Title != "" {
+			<strong class="gtc-alert-title">{ p.Title }</strong>
+		}
+		<div>
+			{ children... }
+		</div>
+	</div>
+}
+
+templ Dialog(p DialogProps) {
+	{{ id := componentID(p.ID) }}
+	<dialog { attributes(p.BaseProps, "gtc-dialog", templ.Attributes{"id": id, "data-gtc-dialog": "", "aria-labelledby": id + "-title"})... }>
+		<header class="gtc-dialog-header">
+			<h2 class="gtc-dialog-title" id={ id + "-title" }>{ p.Title }</h2>
+			<button type="button" class="gtc-button" data-gtc-variant="ghost" data-gtc-dialog-close aria-label={ cmp.Or(p.CloseLabel, "Fechar diálogo") }>×</button>
+		</header>
+		<div class="gtc-dialog-content">
+			{ children... }
+		</div>
+	</dialog>
+}
+
+templ DialogTrigger(p DialogTriggerProps) {
+	<button { buttonAttributes(p.ButtonProps, templ.Attributes{"data-gtc-dialog-open": p.Target, "aria-haspopup": "dialog", "aria-controls": p.Target})... }>
+		{ children... }
+	</button>
+}
+
+templ Dropdown(p DropdownProps) {
+	{{ id := componentID(p.ID) }}
+	<div { attributes(p.BaseProps, "gtc-dropdown", templ.Attributes{"id": id, "data-gtc-dropdown": ""})... }>
+		<button type="button" class="gtc-button" data-gtc-variant="secondary" data-gtc-dropdown-trigger aria-haspopup="menu" aria-expanded="false" aria-controls={ id + "-menu" } id={ id + "-trigger" } disabled?={ p.Disabled }>{ p.Label } <span aria-hidden="true">⌄</span></button>
+		<div class="gtc-dropdown-menu" id={ id + "-menu" } role="menu" aria-labelledby={ id + "-trigger" } data-gtc-dropdown-menu hidden>
+			{ children... }
+		</div>
+	</div>
+}
+
+templ DropdownItem(p DropdownItemProps) {
+	if p.Href != "" && !p.Disabled {
+		<a { attributes(p.BaseProps, "gtc-dropdown-item", templ.Attributes{"role": "menuitem", "href": templ.URL(p.Href), "tabindex": "-1", "data-gtc-dropdown-item": p.Value})... }>
+			{ children... }
+		</a>
+	} else {
+		<button { attributes(p.BaseProps, "gtc-dropdown-item", templ.Attributes{"type": "button", "role": "menuitem", "disabled": p.Disabled, "tabindex": "-1", "data-gtc-dropdown-item": p.Value})... }>
+			{ children... }
+		</button>
+	}
+}
+
+templ Tabs(p TabsProps) {
+	{{ id := componentID(p.ID) }}
+	{{ selected := selectedTab(p) }}
+	<div { attributes(p.BaseProps, "gtc-tabs", templ.Attributes{"id": id, "data-gtc-tabs": ""})... }>
+		<div class="gtc-tab-list" role="tablist" aria-label={ cmp.Or(p.Label, "Abas") }>
+			for i, item := range p.Items {
+				<button type="button" class="gtc-tab" role="tab" id={ fmt.Sprintf("%s-tab-%d", id, i) } aria-controls={ fmt.Sprintf("%s-panel-%d", id, i) } aria-selected={ fmt.Sprint(i == selected) } tabindex={ fmt.Sprint(map[bool]int{true: 0, false: -1}[i == selected]) } disabled?={ item.Disabled }>{ item.Label }</button>
+			}
+		</div>
+		for i, item := range p.Items {
+			<div class="gtc-tab-panel" role="tabpanel" id={ fmt.Sprintf("%s-panel-%d", id, i) } aria-labelledby={ fmt.Sprintf("%s-tab-%d", id, i) } tabindex="0" hidden?={ i != selected }>
+				if item.Content != nil {
+					@item.Content
+				}
+			</div>
+		}
+	</div>
+}
+
+templ Table(p TableProps) {
+	<div class="gtc-table-scroll" role="region" aria-label={ cmp.Or(p.Caption, "Tabela") } tabindex="0">
+		<table { attributes(p.BaseProps, "gtc-table", templ.Attributes{"aria-busy": fmt.Sprint(p.Loading)})... }>
+			if p.Caption != "" {
+				<caption>{ p.Caption }</caption>
+			}
+			{ children... }
+		</table>
+	</div>
+}
+
+templ TableHead(p BaseProps) {
+	<thead { attributes(p, "gtc-table-head", nil)... }>
+		{ children... }
+	</thead>
+}
+
+templ TableBody(p BaseProps) {
+	<tbody { attributes(p, "gtc-table-body", nil)... }>
+		{ children... }
+	</tbody>
+}
+
+templ TableRow(p BaseProps) {
+	<tr { attributes(p, "gtc-table-row", nil)... }>
+		{ children... }
+	</tr>
+}
+
+templ TableHeader(p TableCellProps) {
+	<th { attributes(p.BaseProps, "gtc-table-header", templ.Attributes{"scope": "col", "data-gtc-numeric": fmt.Sprint(p.Numeric)})... }>
+		{ children... }
+	</th>
+}
+
+templ TableCell(p TableCellProps) {
+	<td { attributes(p.BaseProps, "gtc-table-cell", templ.Attributes{"data-gtc-numeric": fmt.Sprint(p.Numeric)})... }>
+		{ children... }
+	</td>
+}
+
+templ Sidebar(p SidebarProps) {
+	<aside { attributes(p.BaseProps, "gtc-sidebar", templ.Attributes{"data-gtc-sidebar": "", "aria-label": cmp.Or(p.Label, "Navegação lateral"), "data-gtc-collapsed": fmt.Sprint(p.Collapsed), "inert": p.Collapsed})... }>
+		{ children... }
+	</aside>
+}
+
+templ SidebarToggle(p SidebarToggleProps) {
+	<button { buttonAttributes(p.ButtonProps, templ.Attributes{"data-gtc-sidebar-toggle": p.Target, "aria-controls": p.Target, "aria-expanded": "false"})... }>
+		{ children... }
+	</button>
+}
+
+templ Breadcrumb(p BreadcrumbProps) {
+	<nav { attributes(p.BaseProps, "gtc-breadcrumb", templ.Attributes{"aria-label": cmp.Or(p.Label, "Caminho de navegação")})... }>
+		<ol>
+			for _, item := range p.Items {
+				<li>
+					if item.Current {
+						<span aria-current="page">{ item.Label }</span>
+					} else {
+						<a href={ templ.URL(item.Href) }>{ item.Label }</a>
+					}
+				</li>
+			}
+		</ol>
+	</nav>
+}
+
+templ Link(p LinkProps) {
+	{{ owned := partialAttributes(p.Partial) }}
+	{{ owned["href"] = templ.URL(p.Href) }}
+	<a { attributes(p.BaseProps, "gtc-link", owned)... }>
+		{ children... }
+	</a>
+}
+
+templ paginationControl(href, label, symbol string) {
+	if href != "" {
+		<a class="gtc-pagination-link" href={ templ.URL(href) } aria-label={ label } title={ label }><span aria-hidden="true">{ symbol }</span></a>
+	} else {
+		<span class="gtc-pagination-link" role="link" aria-label={ label } aria-disabled="true" title={ label }><span aria-hidden="true">{ symbol }</span></span>
+	}
+}
+
+templ Pagination(p PaginationProps) {
+	{{ owned := partialAttributes(p.Partial) }}
+	{{ owned["aria-label"] = cmp.Or(p.Label, "Paginação") }}
+	<nav { attributes(p.BaseProps, "gtc-pagination", owned)... }>
+		@paginationControl(p.FirstHref, "Primeira página", "«")
+		@paginationControl(p.PreviousHref, "Página anterior", "‹")
+		for _, item := range p.Items {
+			<a
+				class="gtc-pagination-link"
+				href={ templ.URL(item.Href) }
+				if item.Current {
+					aria-current="page"
+				}
+			>{ item.Label }</a>
+		}
+		@paginationControl(p.NextHref, "Próxima página", "›")
+		@paginationControl(p.LastHref, "Última página", "»")
+	</nav>
+}
+
+templ Toast(p ToastProps) {
+	<div { attributes(p.BaseProps, "gtc-toasts", templ.Attributes{"data-gtc-toasts": "", "role": "region", "aria-label": cmp.Or(p.Label, "Notificações")})... }>
+		<div class="gtc-visually-hidden" data-gtc-toast-announcer role="status" aria-live="polite" aria-atomic="true"></div>
+		<div class="gtc-toast-list" data-gtc-toast-list></div>
+	</div>
+}

@@ -36,7 +36,7 @@ test("todos os componentes e assets carregam sem erros JavaScript", async ({ pag
 });
 
 test("Dialog mantém o foco, fecha por Escape e retorna ao trigger", async ({ page }) => {
-  const trigger = page.getByRole("button", { name: "Abrir diálogo", exact: true });
+  const trigger = page.locator("#overlays").getByRole("button", { name: "Abrir diálogo", exact: true });
   const dialog = page.getByRole("dialog", { name: "Detalhes do projeto" });
   await trigger.click();
   await expect(dialog).toBeVisible();
@@ -140,7 +140,7 @@ test("Sidebar sincroniza estado, aria-expanded e inert", async ({ page }) => {
 test("Toast escapa conteúdo, anuncia mensagem e retorna foco ao dispensar", async ({ page }) => {
   const trigger = page.getByRole("button", { name: "Notificar sucesso" });
   await trigger.click();
-  const region = page.getByRole("region", { name: "Notificações" });
+  const region = page.getByRole("region", { name: "Notificações", exact: true });
   await expect(region.locator(".gtc-toast")).toContainText("As alterações foram salvas.");
   await expect(region.locator("[role=status]")).toHaveText("As alterações foram salvas.");
   const close = region.getByRole("button", { name: "Dispensar notificação" });

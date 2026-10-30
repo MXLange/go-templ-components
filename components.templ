@@ -97,10 +97,11 @@ templ Alert(p AlertProps) {
 
 templ Dialog(p DialogProps) {
 	{{ id := componentID(p.ID) }}
+	{{ messages := resolveMessages(ctx, p.Messages) }}
 	<dialog { attributes(p.BaseProps, "gtc-dialog", templ.Attributes{"id": id, "data-gtc-dialog": "", "aria-labelledby": id + "-title"})... }>
 		<header class="gtc-dialog-header">
 			<h2 class="gtc-dialog-title" id={ id + "-title" }>{ p.Title }</h2>
-			<button type="button" class="gtc-button" data-gtc-variant="ghost" data-gtc-dialog-close aria-label={ cmp.Or(p.CloseLabel, "Fechar diálogo") }>×</button>
+			<button type="button" class="gtc-button" data-gtc-variant="ghost" data-gtc-dialog-close aria-label={ cmp.Or(p.CloseLabel, messages.DialogClose) }>×</button>
 		</header>
 		<div class="gtc-dialog-content">
 			{ children... }
@@ -139,8 +140,9 @@ templ DropdownItem(p DropdownItemProps) {
 templ Tabs(p TabsProps) {
 	{{ id := componentID(p.ID) }}
 	{{ selected := selectedTab(p) }}
+	{{ messages := resolveMessages(ctx, p.Messages) }}
 	<div { attributes(p.BaseProps, "gtc-tabs", templ.Attributes{"id": id, "data-gtc-tabs": ""})... }>
-		<div class="gtc-tab-list" role="tablist" aria-label={ cmp.Or(p.Label, "Abas") }>
+		<div class="gtc-tab-list" role="tablist" aria-label={ cmp.Or(p.Label, messages.TabsLabel) }>
 			for i, item := range p.Items {
 				<button type="button" class="gtc-tab" role="tab" id={ fmt.Sprintf("%s-tab-%d", id, i) } aria-controls={ fmt.Sprintf("%s-panel-%d", id, i) } aria-selected={ fmt.Sprint(i == selected) } tabindex={ fmt.Sprint(map[bool]int{true: 0, false: -1}[i == selected]) } disabled?={ item.Disabled }>{ item.Label }</button>
 			}
@@ -156,7 +158,8 @@ templ Tabs(p TabsProps) {
 }
 
 templ Table(p TableProps) {
-	<div class="gtc-table-scroll" role="region" aria-label={ cmp.Or(p.Caption, "Tabela") } tabindex="0">
+	{{ messages := resolveMessages(ctx, p.Messages) }}
+	<div class="gtc-table-scroll" role="region" aria-label={ cmp.Or(p.Caption, messages.TableLabel) } tabindex="0">
 		<table { attributes(p.BaseProps, "gtc-table", templ.Attributes{"aria-busy": fmt.Sprint(p.Loading)})... }>
 			if p.Caption != "" {
 				<caption>{ p.Caption }</caption>
@@ -197,7 +200,8 @@ templ TableCell(p TableCellProps) {
 }
 
 templ Sidebar(p SidebarProps) {
-	<aside { attributes(p.BaseProps, "gtc-sidebar", templ.Attributes{"data-gtc-sidebar": "", "aria-label": cmp.Or(p.Label, "Navegação lateral"), "data-gtc-collapsed": fmt.Sprint(p.Collapsed), "inert": p.Collapsed})... }>
+	{{ messages := resolveMessages(ctx, p.Messages) }}
+	<aside { attributes(p.BaseProps, "gtc-sidebar", templ.Attributes{"data-gtc-sidebar": "", "aria-label": cmp.Or(p.Label, messages.SidebarLabel), "data-gtc-sidebar-close-label": messages.SidebarClose, "data-gtc-mobile-modal": fmt.Sprint(p.MobileModal), "data-gtc-collapsed": fmt.Sprint(p.Collapsed), "inert": p.Collapsed})... }>
 		{ children... }
 	</aside>
 }
@@ -209,7 +213,8 @@ templ SidebarToggle(p SidebarToggleProps) {
 }
 
 templ Breadcrumb(p BreadcrumbProps) {
-	<nav { attributes(p.BaseProps, "gtc-breadcrumb", templ.Attributes{"aria-label": cmp.Or(p.Label, "Caminho de navegação")})... }>
+	{{ messages := resolveMessages(ctx, p.Messages) }}
+	<nav { attributes(p.BaseProps, "gtc-breadcrumb", templ.Attributes{"aria-label": cmp.Or(p.Label, messages.BreadcrumbLabel)})... }>
 		<ol>
 			for _, item := range p.Items {
 				<li>
@@ -226,6 +231,7 @@ templ Breadcrumb(p BreadcrumbProps) {
 
 templ Link(p LinkProps) {
 	{{ owned := partialAttributes(p.Partial) }}
+	{{ owned["data-gtc-request-error-message"] = resolveMessages(ctx, p.Messages).PartialError }}
 	{{ owned["href"] = templ.URL(p.Href) }}
 	<a { attributes(p.BaseProps, "gtc-link", owned)... }>
 		{ children... }
@@ -241,11 +247,13 @@ templ paginationControl(href, label, symbol string) {
 }
 
 templ Pagination(p PaginationProps) {
+	{{ messages := resolveMessages(ctx, p.Messages) }}
 	{{ owned := partialAttributes(p.Partial) }}
-	{{ owned["aria-label"] = cmp.Or(p.Label, "Paginação") }}
+	{{ owned["aria-label"] = cmp.Or(p.Label, messages.PaginationLabel) }}
+	{{ owned["data-gtc-request-error-message"] = messages.PartialError }}
 	<nav { attributes(p.BaseProps, "gtc-pagination", owned)... }>
-		@paginationControl(p.FirstHref, "Primeira página", "«")
-		@paginationControl(p.PreviousHref, "Página anterior", "‹")
+		@paginationControl(p.FirstHref, messages.PaginationFirst, "«")
+		@paginationControl(p.PreviousHref, messages.PaginationPrevious, "‹")
 		for _, item := range p.Items {
 			<a
 				class="gtc-pagination-link"
@@ -255,13 +263,14 @@ templ Pagination(p PaginationProps) {
 				}
 			>{ item.Label }</a>
 		}
-		@paginationControl(p.NextHref, "Próxima página", "›")
-		@paginationControl(p.LastHref, "Última página", "»")
+		@paginationControl(p.NextHref, messages.PaginationNext, "›")
+		@paginationControl(p.LastHref, messages.PaginationLast, "»")
 	</nav>
 }
 
 templ Toast(p ToastProps) {
-	<div { attributes(p.BaseProps, "gtc-toasts", templ.Attributes{"data-gtc-toasts": "", "role": "region", "aria-label": cmp.Or(p.Label, "Notificações")})... }>
+	{{ messages := resolveMessages(ctx, p.Messages) }}
+	<div { attributes(p.BaseProps, "gtc-toasts", templ.Attributes{"data-gtc-toasts": "", "data-gtc-toast-close-label": messages.ToastClose, "role": "region", "aria-label": cmp.Or(p.Label, messages.ToastLabel)})... }>
 		<div class="gtc-visually-hidden" data-gtc-toast-announcer role="status" aria-live="polite" aria-atomic="true"></div>
 		<div class="gtc-toast-list" data-gtc-toast-list></div>
 	</div>

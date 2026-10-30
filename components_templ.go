@@ -824,6 +824,7 @@ func Dialog(p DialogProps) templ.Component {
 		templ_7745c5c3_Var28 := templ.GetChildren(ctx)
 		ctx = templ.ClearChildren(ctx)
 		id := componentID(p.ID)
+		messages := resolveMessages(ctx, p.Messages)
 		{
 			templ_7745c5c3_ElementWriter := templ_7745c5c3_Buffer
 			templ_7745c5c3_Buffer := templ.GetBuffer()
@@ -853,7 +854,7 @@ func Dialog(p DialogProps) templ.Component {
 		var templ_7745c5c3_Var29 string
 		templ_7745c5c3_Var29, templ_7745c5c3_Err = templruntime.NewAttributeExpression(id + "-title").Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 102, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 103, Col: 50}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var29)
 		if templ_7745c5c3_Err != nil {
@@ -866,7 +867,7 @@ func Dialog(p DialogProps) templ.Component {
 		var templ_7745c5c3_Var30 string
 		templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(p.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 102, Col: 62}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 103, Col: 62}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
 		if templ_7745c5c3_Err != nil {
@@ -877,9 +878,9 @@ func Dialog(p DialogProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var31 string
-		templ_7745c5c3_Var31, templ_7745c5c3_Err = templruntime.NewAttributeExpression(cmp.Or(p.CloseLabel, "Fechar diálogo")).Resolve(ctx)
+		templ_7745c5c3_Var31, templ_7745c5c3_Err = templruntime.NewAttributeExpression(cmp.Or(p.CloseLabel, messages.DialogClose)).Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 103, Col: 143}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 104, Col: 146}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var31)
 		if templ_7745c5c3_Err != nil {
@@ -1005,7 +1006,7 @@ func Dropdown(p DropdownProps) templ.Component {
 		var templ_7745c5c3_Var34 string
 		templ_7745c5c3_Var34, templ_7745c5c3_Err = templruntime.NewAttributeExpression(id + "-menu").Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 120, Col: 169}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 121, Col: 169}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var34)
 		if templ_7745c5c3_Err != nil {
@@ -1018,7 +1019,7 @@ func Dropdown(p DropdownProps) templ.Component {
 		var templ_7745c5c3_Var35 string
 		templ_7745c5c3_Var35, templ_7745c5c3_Err = templruntime.NewAttributeExpression(id + "-trigger").Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 120, Col: 192}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 121, Col: 192}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var35)
 		if templ_7745c5c3_Err != nil {
@@ -1041,7 +1042,7 @@ func Dropdown(p DropdownProps) templ.Component {
 		var templ_7745c5c3_Var36 string
 		templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.JoinStringErrs(p.Label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 120, Col: 229}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 121, Col: 229}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var36))
 		if templ_7745c5c3_Err != nil {
@@ -1054,7 +1055,7 @@ func Dropdown(p DropdownProps) templ.Component {
 		var templ_7745c5c3_Var37 string
 		templ_7745c5c3_Var37, templ_7745c5c3_Err = templruntime.NewAttributeExpression(id + "-menu").Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 121, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 122, Col: 50}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var37)
 		if templ_7745c5c3_Err != nil {
@@ -1067,7 +1068,7 @@ func Dropdown(p DropdownProps) templ.Component {
 		var templ_7745c5c3_Var38 string
 		templ_7745c5c3_Var38, templ_7745c5c3_Err = templruntime.NewAttributeExpression(id + "-trigger").Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 121, Col: 98}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 122, Col: 98}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var38)
 		if templ_7745c5c3_Err != nil {
@@ -1201,6 +1202,7 @@ func Tabs(p TabsProps) templ.Component {
 		ctx = templ.ClearChildren(ctx)
 		id := componentID(p.ID)
 		selected := selectedTab(p)
+		messages := resolveMessages(ctx, p.Messages)
 		{
 			templ_7745c5c3_ElementWriter := templ_7745c5c3_Buffer
 			templ_7745c5c3_Buffer := templ.GetBuffer()
@@ -1228,9 +1230,9 @@ func Tabs(p TabsProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var41 string
-		templ_7745c5c3_Var41, templ_7745c5c3_Err = templruntime.NewAttributeExpression(cmp.Or(p.Label, "Abas")).Resolve(ctx)
+		templ_7745c5c3_Var41, templ_7745c5c3_Err = templruntime.NewAttributeExpression(cmp.Or(p.Label, messages.TabsLabel)).Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 143, Col: 79}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 145, Col: 91}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var41)
 		if templ_7745c5c3_Err != nil {
@@ -1248,7 +1250,7 @@ func Tabs(p TabsProps) templ.Component {
 			var templ_7745c5c3_Var42 string
 			templ_7745c5c3_Var42, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%s-tab-%d", id, i)).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 145, Col: 89}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 147, Col: 89}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var42)
 			if templ_7745c5c3_Err != nil {
@@ -1261,7 +1263,7 @@ func Tabs(p TabsProps) templ.Component {
 			var templ_7745c5c3_Var43 string
 			templ_7745c5c3_Var43, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%s-panel-%d", id, i)).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 145, Col: 141}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 147, Col: 141}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var43)
 			if templ_7745c5c3_Err != nil {
@@ -1274,7 +1276,7 @@ func Tabs(p TabsProps) templ.Component {
 			var templ_7745c5c3_Var44 string
 			templ_7745c5c3_Var44, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprint(i == selected)).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 145, Col: 185}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 147, Col: 185}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var44)
 			if templ_7745c5c3_Err != nil {
@@ -1287,7 +1289,7 @@ func Tabs(p TabsProps) templ.Component {
 			var templ_7745c5c3_Var45 string
 			templ_7745c5c3_Var45, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprint(map[bool]int{true: 0, false: -1}[i == selected])).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 145, Col: 258}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 147, Col: 258}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var45)
 			if templ_7745c5c3_Err != nil {
@@ -1310,7 +1312,7 @@ func Tabs(p TabsProps) templ.Component {
 			var templ_7745c5c3_Var46 string
 			templ_7745c5c3_Var46, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 145, Col: 301}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 147, Col: 301}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var46))
 			if templ_7745c5c3_Err != nil {
@@ -1333,7 +1335,7 @@ func Tabs(p TabsProps) templ.Component {
 			var templ_7745c5c3_Var47 string
 			templ_7745c5c3_Var47, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%s-panel-%d", id, i)).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 149, Col: 84}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 151, Col: 84}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var47)
 			if templ_7745c5c3_Err != nil {
@@ -1346,7 +1348,7 @@ func Tabs(p TabsProps) templ.Component {
 			var templ_7745c5c3_Var48 string
 			templ_7745c5c3_Var48, templ_7745c5c3_Err = templruntime.NewAttributeExpression(fmt.Sprintf("%s-tab-%d", id, i)).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 149, Col: 136}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 151, Col: 136}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var48)
 			if templ_7745c5c3_Err != nil {
@@ -1403,14 +1405,15 @@ func Table(p TableProps) templ.Component {
 		ctx = templ.InitializeContext(ctx)
 		templ_7745c5c3_Var49 := templ.GetChildren(ctx)
 		ctx = templ.ClearChildren(ctx)
+		messages := resolveMessages(ctx, p.Messages)
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 105, "<div class=\"gtc-table-scroll\" role=\"region\" aria-label=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var50 string
-		templ_7745c5c3_Var50, templ_7745c5c3_Err = templruntime.NewAttributeExpression(cmp.Or(p.Caption, "Tabela")).Resolve(ctx)
+		templ_7745c5c3_Var50, templ_7745c5c3_Err = templruntime.NewAttributeExpression(cmp.Or(p.Caption, messages.TableLabel)).Resolve(ctx)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 159, Col: 85}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 162, Col: 96}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var50)
 		if templ_7745c5c3_Err != nil {
@@ -1454,7 +1457,7 @@ func Table(p TableProps) templ.Component {
 			var templ_7745c5c3_Var51 string
 			templ_7745c5c3_Var51, templ_7745c5c3_Err = templ.JoinStringErrs(p.Caption)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 162, Col: 24}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 165, Col: 24}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var51))
 			if templ_7745c5c3_Err != nil {
@@ -1775,6 +1778,7 @@ func Sidebar(p SidebarProps) templ.Component {
 		ctx = templ.InitializeContext(ctx)
 		templ_7745c5c3_Var57 := templ.GetChildren(ctx)
 		ctx = templ.ClearChildren(ctx)
+		messages := resolveMessages(ctx, p.Messages)
 		{
 			templ_7745c5c3_ElementWriter := templ_7745c5c3_Buffer
 			templ_7745c5c3_Buffer := templ.GetBuffer()
@@ -1783,7 +1787,7 @@ func Sidebar(p SidebarProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.RenderAttributes(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_ElementWriter, "aside", attributes(p.BaseProps, "gtc-sidebar", templ.Attributes{"data-gtc-sidebar": "", "aria-label": cmp.Or(p.Label, "Navegação lateral"), "data-gtc-collapsed": fmt.Sprint(p.Collapsed), "inert": p.Collapsed}))
+			templ_7745c5c3_Err = templruntime.RenderAttributes(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_ElementWriter, "aside", attributes(p.BaseProps, "gtc-sidebar", templ.Attributes{"data-gtc-sidebar": "", "aria-label": cmp.Or(p.Label, messages.SidebarLabel), "data-gtc-sidebar-close-label": messages.SidebarClose, "data-gtc-mobile-modal": fmt.Sprint(p.MobileModal), "data-gtc-collapsed": fmt.Sprint(p.Collapsed), "inert": p.Collapsed}))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -1886,6 +1890,7 @@ func Breadcrumb(p BreadcrumbProps) templ.Component {
 		}
 		ctx = templ.InitializeContext(ctx)
 		ctx = templ.ClearChildren(ctx)
+		messages := resolveMessages(ctx, p.Messages)
 		{
 			templ_7745c5c3_ElementWriter := templ_7745c5c3_Buffer
 			templ_7745c5c3_Buffer := templ.GetBuffer()
@@ -1894,7 +1899,7 @@ func Breadcrumb(p BreadcrumbProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.RenderAttributes(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_ElementWriter, "nav", attributes(p.BaseProps, "gtc-breadcrumb", templ.Attributes{"aria-label": cmp.Or(p.Label, "Caminho de navegação")}))
+			templ_7745c5c3_Err = templruntime.RenderAttributes(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_ElementWriter, "nav", attributes(p.BaseProps, "gtc-breadcrumb", templ.Attributes{"aria-label": cmp.Or(p.Label, messages.BreadcrumbLabel)}))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -1925,7 +1930,7 @@ func Breadcrumb(p BreadcrumbProps) templ.Component {
 				var templ_7745c5c3_Var60 string
 				templ_7745c5c3_Var60, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 217, Col: 44}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 222, Col: 44}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var60))
 				if templ_7745c5c3_Err != nil {
@@ -1943,7 +1948,7 @@ func Breadcrumb(p BreadcrumbProps) templ.Component {
 				var templ_7745c5c3_Var61 string
 				templ_7745c5c3_Var61, templ_7745c5c3_Err = templruntime.NewAttributeExpression(templ.URL(item.Href)).ResolveURL(ctx)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 219, Col: 36}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 224, Col: 36}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var61)
 				if templ_7745c5c3_Err != nil {
@@ -1956,7 +1961,7 @@ func Breadcrumb(p BreadcrumbProps) templ.Component {
 				var templ_7745c5c3_Var62 string
 				templ_7745c5c3_Var62, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 219, Col: 51}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 224, Col: 51}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var62))
 				if templ_7745c5c3_Err != nil {
@@ -1999,6 +2004,7 @@ func Link(p LinkProps) templ.Component {
 		templ_7745c5c3_Var63 := templ.GetChildren(ctx)
 		ctx = templ.ClearChildren(ctx)
 		owned := partialAttributes(p.Partial)
+		owned["data-gtc-request-error-message"] = resolveMessages(ctx, p.Messages).PartialError
 		owned["href"] = templ.URL(p.Href)
 		{
 			templ_7745c5c3_ElementWriter := templ_7745c5c3_Buffer
@@ -2063,7 +2069,7 @@ func paginationControl(href, label, symbol string) templ.Component {
 			var templ_7745c5c3_Var65 string
 			templ_7745c5c3_Var65, templ_7745c5c3_Err = templruntime.NewAttributeExpression(templ.URL(href)).ResolveURL(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 237, Col: 55}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 243, Col: 55}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var65)
 			if templ_7745c5c3_Err != nil {
@@ -2076,7 +2082,7 @@ func paginationControl(href, label, symbol string) templ.Component {
 			var templ_7745c5c3_Var66 string
 			templ_7745c5c3_Var66, templ_7745c5c3_Err = templruntime.NewAttributeExpression(label).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 237, Col: 76}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 243, Col: 76}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var66)
 			if templ_7745c5c3_Err != nil {
@@ -2089,7 +2095,7 @@ func paginationControl(href, label, symbol string) templ.Component {
 			var templ_7745c5c3_Var67 string
 			templ_7745c5c3_Var67, templ_7745c5c3_Err = templruntime.NewAttributeExpression(label).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 237, Col: 92}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 243, Col: 92}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var67)
 			if templ_7745c5c3_Err != nil {
@@ -2102,7 +2108,7 @@ func paginationControl(href, label, symbol string) templ.Component {
 			var templ_7745c5c3_Var68 string
 			templ_7745c5c3_Var68, templ_7745c5c3_Err = templ.JoinStringErrs(symbol)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 237, Col: 128}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 243, Col: 128}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var68))
 			if templ_7745c5c3_Err != nil {
@@ -2120,7 +2126,7 @@ func paginationControl(href, label, symbol string) templ.Component {
 			var templ_7745c5c3_Var69 string
 			templ_7745c5c3_Var69, templ_7745c5c3_Err = templruntime.NewAttributeExpression(label).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 239, Col: 66}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 245, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var69)
 			if templ_7745c5c3_Err != nil {
@@ -2133,7 +2139,7 @@ func paginationControl(href, label, symbol string) templ.Component {
 			var templ_7745c5c3_Var70 string
 			templ_7745c5c3_Var70, templ_7745c5c3_Err = templruntime.NewAttributeExpression(label).Resolve(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 239, Col: 103}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 245, Col: 103}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var70)
 			if templ_7745c5c3_Err != nil {
@@ -2146,7 +2152,7 @@ func paginationControl(href, label, symbol string) templ.Component {
 			var templ_7745c5c3_Var71 string
 			templ_7745c5c3_Var71, templ_7745c5c3_Err = templ.JoinStringErrs(symbol)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 239, Col: 139}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 245, Col: 139}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var71))
 			if templ_7745c5c3_Err != nil {
@@ -2178,8 +2184,10 @@ func Pagination(p PaginationProps) templ.Component {
 		}
 		ctx = templ.InitializeContext(ctx)
 		ctx = templ.ClearChildren(ctx)
+		messages := resolveMessages(ctx, p.Messages)
 		owned := partialAttributes(p.Partial)
-		owned["aria-label"] = cmp.Or(p.Label, "Paginação")
+		owned["aria-label"] = cmp.Or(p.Label, messages.PaginationLabel)
+		owned["data-gtc-request-error-message"] = messages.PartialError
 		{
 			templ_7745c5c3_ElementWriter := templ_7745c5c3_Buffer
 			templ_7745c5c3_Buffer := templ.GetBuffer()
@@ -2206,11 +2214,11 @@ func Pagination(p PaginationProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = paginationControl(p.FirstHref, "Primeira página", "«").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = paginationControl(p.FirstHref, messages.PaginationFirst, "«").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = paginationControl(p.PreviousHref, "Página anterior", "‹").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = paginationControl(p.PreviousHref, messages.PaginationPrevious, "‹").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -2222,7 +2230,7 @@ func Pagination(p PaginationProps) templ.Component {
 			var templ_7745c5c3_Var73 string
 			templ_7745c5c3_Var73, templ_7745c5c3_Err = templruntime.NewAttributeExpression(templ.URL(item.Href)).ResolveURL(ctx)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 252, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 260, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var73)
 			if templ_7745c5c3_Err != nil {
@@ -2245,7 +2253,7 @@ func Pagination(p PaginationProps) templ.Component {
 			var templ_7745c5c3_Var74 string
 			templ_7745c5c3_Var74, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 256, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components.templ`, Line: 264, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var74))
 			if templ_7745c5c3_Err != nil {
@@ -2256,11 +2264,11 @@ func Pagination(p PaginationProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = paginationControl(p.NextHref, "Próxima página", "›").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = paginationControl(p.NextHref, messages.PaginationNext, "›").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = paginationControl(p.LastHref, "Última página", "»").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = paginationControl(p.LastHref, messages.PaginationLast, "»").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -2289,6 +2297,7 @@ func Toast(p ToastProps) templ.Component {
 		}
 		ctx = templ.InitializeContext(ctx)
 		ctx = templ.ClearChildren(ctx)
+		messages := resolveMessages(ctx, p.Messages)
 		{
 			templ_7745c5c3_ElementWriter := templ_7745c5c3_Buffer
 			templ_7745c5c3_Buffer := templ.GetBuffer()
@@ -2297,7 +2306,7 @@ func Toast(p ToastProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.RenderAttributes(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_ElementWriter, "div", attributes(p.BaseProps, "gtc-toasts", templ.Attributes{"data-gtc-toasts": "", "role": "region", "aria-label": cmp.Or(p.Label, "Notificações")}))
+			templ_7745c5c3_Err = templruntime.RenderAttributes(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_ElementWriter, "div", attributes(p.BaseProps, "gtc-toasts", templ.Attributes{"data-gtc-toasts": "", "data-gtc-toast-close-label": messages.ToastClose, "role": "region", "aria-label": cmp.Or(p.Label, messages.ToastLabel)}))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

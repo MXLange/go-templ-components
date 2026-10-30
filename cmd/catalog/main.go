@@ -75,6 +75,24 @@ func catalogHandler() http.Handler {
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
 	})
+	mux.HandleFunc("GET /demo/locale", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Vary", "X-GTC-Partial")
+		language := r.URL.Query().Get("lang")
+		if language != "en" {
+			language = "pt-BR"
+		}
+		page, _ := strconv.Atoi(r.URL.Query().Get("page"))
+		page = min(max(page, 1), 2)
+		if target := r.Header.Get("X-GTC-Partial"); target != "" {
+			if target != "locale-"+language+"-result" {
+				http.Error(w, "Região desconhecida", http.StatusBadRequest)
+				return
+			}
+			templ.Handler(localizedResult(language, page)).ServeHTTP(w, r)
+			return
+		}
+		templ.Handler(localizedPage(language, page)).ServeHTTP(w, r)
+	})
 	mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Vary", "X-GTC-Partial")
 		page, _ := strconv.Atoi(r.URL.Query().Get("page"))

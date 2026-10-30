@@ -16,6 +16,7 @@ type BaseProps struct {
 	ID         string
 	Class      string
 	Attributes templ.Attributes
+	Messages   *Messages
 }
 
 type ButtonVariant string
@@ -163,8 +164,9 @@ type TableCellProps struct {
 
 type SidebarProps struct {
 	BaseProps
-	Label     string
-	Collapsed bool
+	Label       string
+	Collapsed   bool
+	MobileModal bool
 }
 
 type SidebarToggleProps struct {

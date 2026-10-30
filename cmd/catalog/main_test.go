@@ -86,3 +86,27 @@ func TestFullAndPartialCatalogResponses(t *testing.T) {
 		})
 	}
 }
+
+func TestLocalizedResponses(t *testing.T) {
+	for _, language := range []string{"en", "pt-BR"} {
+		for _, partial := range []bool{false, true} {
+			request := httptest.NewRequest("GET", "/demo/locale?lang="+language+"&page=2", nil)
+			if partial {
+				request.Header.Set("X-GTC-Partial", "locale-"+language+"-result")
+			}
+			response := httptest.NewRecorder()
+			catalogHandler().ServeHTTP(response, request)
+			body := response.Body.String()
+			label := "Primeira página"
+			if language == "en" {
+				label = "First page"
+			}
+			if response.Code != 200 || !strings.Contains(body, `aria-label="`+label+`"`) || strings.Contains(body, "<!doctype html>") == partial {
+				t.Fatalf("Resposta traduzida incorreta: idioma=%s, parcial=%t, status=%d", language, partial, response.Code)
+			}
+			if response.Header().Get("Vary") != "X-GTC-Partial" {
+				t.Fatal("Resposta sem Vary para o fragmento")
+			}
+		}
+	}
+}

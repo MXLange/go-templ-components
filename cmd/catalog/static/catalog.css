@@ -20,6 +20,7 @@ button, select, input, textarea { font-family: inherit; }
 .catalog-navigation > .gtc-button { width: 100%; margin-bottom: 1rem; }
 .catalog-navigation .gtc-sidebar { background: transparent; border: 0; padding: 0.5rem; }
 .catalog-navigation nav { display: grid; gap: 0.125rem; }
+.catalog-navigation .gtc-sidebar-modal nav { grid-template-columns: minmax(0, 1fr); }
 .catalog-navigation nav a { padding: 0.5rem 0.75rem; text-decoration: none; color: var(--gtc-color-muted); font-size: 0.875rem; border-radius: var(--gtc-radius); }
 .catalog-navigation nav a:hover { background: var(--gtc-color-raised); color: var(--gtc-color-text); }
 .catalog-nav-title { padding-inline: 0.75rem; font-size: 0.6875rem; letter-spacing: 0.1em; font-weight: 600; color: var(--gtc-color-muted); }

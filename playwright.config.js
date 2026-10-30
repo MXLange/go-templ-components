@@ -12,7 +12,7 @@ module.exports = defineConfig({
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
-  projects: [{ name: "chromium", use: { browserName: "chromium" } }],
+  projects: ["chromium", "firefox", "webkit"].map(name => ({ name, use: { browserName: name } })),
   webServer: {
     command: "go run ./cmd/catalog -addr 127.0.0.1:18080",
     url: "http://127.0.0.1:18080/healthz",

@@ -10,6 +10,8 @@
   const partialRequests = new Map();
   const requestStatuses = new WeakMap();
   const historyRegions = new Map();
+  const sidebarModals = new Map();
+  const mobileSidebar = window.matchMedia("(max-width: 800px)");
 
   function historyState() {
     return {
@@ -86,7 +88,7 @@
       emit(target, "request-success", { ...detail, status });
     } catch (error) {
       if (request.controller.signal.aborted || partialRequests.get(target) !== request || !target.isConnected) return;
-      const message = "Não foi possível carregar o conteúdo. Tente novamente.";
+      const message = target.dataset.gtcRequestErrorMessage || "Não foi possível carregar o conteúdo. Tente novamente.";
       requestStatus(target, message);
       emit(target, "request-error", { ...detail, status, message, error: error.message });
     } finally {
@@ -111,6 +113,7 @@
     const target = document.getElementById(config.dataset.gtcPartial);
     if (!target) return;
     event.preventDefault();
+    target.dataset.gtcRequestErrorMessage = config.dataset.gtcRequestErrorMessage || "Não foi possível carregar o conteúdo. Tente novamente.";
     registerHistory(config);
     void requestPartial(target, url.href, config.dataset.gtcHistory === "true" ? "push" : null);
   });
@@ -231,6 +234,102 @@
     });
   }
 
+  function trapFocus(event, element) {
+    if (event.key !== "Tab") return;
+    const focusable = [...element.querySelectorAll('button, a[href], input, select, textarea, [tabindex]')]
+      .filter(node => !node.disabled && node.tabIndex >= 0 && node.getClientRects().length && !node.closest("[inert]"));
+    const first = focusable[0];
+    const last = focusable.at(-1);
+    if (!first) { event.preventDefault(); return; }
+    if (event.shiftKey && (document.activeElement === first || !element.contains(document.activeElement))) {
+      event.preventDefault(); last.focus();
+    } else if (!event.shiftKey && (document.activeElement === last || !element.contains(document.activeElement))) {
+      event.preventDefault(); first.focus();
+    }
+  }
+
+  function syncScrollLock() {
+    document.documentElement.toggleAttribute("data-gtc-sidebar-modal-open", Boolean(document.querySelector(".gtc-sidebar-modal[open]")));
+  }
+
+  function initSidebar(sidebar) {
+    if (sidebar.dataset.gtcMobileModal !== "true") { syncSidebar(sidebar); return; }
+    const marker = document.createComment("gtc-sidebar-position");
+    sidebar.before(marker);
+    const dialog = document.createElement("dialog");
+    dialog.className = "gtc-sidebar-modal";
+    dialog.setAttribute("aria-label", sidebar.getAttribute("aria-label"));
+    const header = document.createElement("div");
+    header.className = "gtc-sidebar-modal-header";
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "gtc-button";
+    close.dataset.gtcVariant = "ghost";
+    close.setAttribute("aria-label", sidebar.dataset.gtcSidebarCloseLabel || "Fechar navegação");
+    close.textContent = "×";
+    header.append(close);
+    dialog.append(header);
+    marker.after(dialog);
+    const state = { dialog, marker, mobile: null, trigger: null, ignoreClose: 0, desktopCollapsed: sidebar.dataset.gtcCollapsed };
+    sidebarModals.set(sidebar, state);
+    dialog.addEventListener("keydown", event => trapFocus(event, dialog));
+    close.addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", event => {
+      if (event.target !== dialog) return;
+      const rect = dialog.getBoundingClientRect();
+      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
+    });
+    dialog.addEventListener("close", () => {
+      syncScrollLock();
+      if (state.ignoreClose > 0) { state.ignoreClose--; return; }
+      sidebar.dataset.gtcCollapsed = "true";
+      syncSidebar(sidebar);
+      requestAnimationFrame(() => {
+        if (!dialog.open && state.trigger?.isConnected) state.trigger.focus({ preventScroll: true });
+      });
+      emit(sidebar, "sidebar-change", { expanded: false });
+    });
+    state.onNavigate = event => {
+      if (state.mobile && dialog.open && event.target instanceof Element && event.target.closest("a[href]")
+        && event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) dialog.close();
+    };
+    sidebar.addEventListener("click", state.onNavigate);
+    state.updateViewport = () => {
+      if (state.mobile === mobileSidebar.matches) return;
+      state.mobile = mobileSidebar.matches;
+      if (state.mobile) {
+        state.desktopCollapsed = sidebar.dataset.gtcCollapsed;
+        dialog.append(sidebar);
+        sidebar.dataset.gtcCollapsed = "true";
+      } else {
+        if (dialog.open) { state.ignoreClose++; dialog.close(); }
+        marker.after(sidebar);
+        sidebar.dataset.gtcCollapsed = state.desktopCollapsed;
+      }
+      syncSidebar(sidebar);
+      syncScrollLock();
+    };
+    mobileSidebar.addEventListener("change", state.updateViewport);
+    state.updateViewport();
+  }
+
+  function toggleSidebar(sidebar, trigger) {
+    const state = sidebarModals.get(sidebar);
+    if (state?.mobile) {
+      if (state.dialog.open) { state.dialog.close(); return; }
+      state.trigger = trigger;
+      sidebar.dataset.gtcCollapsed = "false";
+      syncSidebar(sidebar);
+      state.dialog.showModal();
+      syncScrollLock();
+      emit(sidebar, "sidebar-change", { expanded: true });
+      return;
+    }
+    sidebar.dataset.gtcCollapsed = String(sidebar.dataset.gtcCollapsed !== "true");
+    syncSidebar(sidebar);
+    emit(sidebar, "sidebar-change", { expanded: sidebar.dataset.gtcCollapsed !== "true" });
+  }
+
   function init(root = document) {
     const selector = "[data-gtc-dropdown], [data-gtc-tabs], [data-gtc-dialog], [data-gtc-sidebar], [data-gtc-sidebar-toggle]";
     const nodes = [...root.querySelectorAll(selector)];
@@ -240,25 +339,13 @@
       initialized.add(element);
       if (element.hasAttribute("data-gtc-dropdown")) initDropdown(element);
       if (element.hasAttribute("data-gtc-tabs")) initTabs(element);
-      if (element.hasAttribute("data-gtc-sidebar")) syncSidebar(element);
+      if (element.hasAttribute("data-gtc-sidebar")) initSidebar(element);
       if (element.hasAttribute("data-gtc-sidebar-toggle")) {
         const sidebar = document.getElementById(element.dataset.gtcSidebarToggle);
         if (sidebar) syncSidebar(sidebar);
       }
       if (element.hasAttribute("data-gtc-dialog")) {
-        element.addEventListener("keydown", event => {
-          if (event.key !== "Tab") return;
-          const focusable = [...element.querySelectorAll('button, a[href], input, select, textarea, [tabindex]')]
-            .filter(node => !node.disabled && node.tabIndex >= 0 && node.getClientRects().length && !node.closest("[inert]"));
-          const first = focusable[0];
-          const last = focusable.at(-1);
-          if (!first) { event.preventDefault(); return; }
-          if (event.shiftKey && (document.activeElement === first || !element.contains(document.activeElement))) {
-            event.preventDefault(); last.focus();
-          } else if (!event.shiftKey && (document.activeElement === last || !element.contains(document.activeElement))) {
-            event.preventDefault(); first.focus();
-          }
-        });
+        element.addEventListener("keydown", event => trapFocus(event, element));
         element.addEventListener("close", () => {
           const trigger = dialogs.get(element);
           if (trigger?.isConnected) trigger.focus();
@@ -286,11 +373,7 @@
     const toggle = event.target.closest("[data-gtc-sidebar-toggle]");
     if (toggle && !toggle.disabled) {
       const sidebar = document.getElementById(toggle.dataset.gtcSidebarToggle);
-      if (sidebar) {
-        sidebar.dataset.gtcCollapsed = String(sidebar.dataset.gtcCollapsed !== "true");
-        syncSidebar(sidebar);
-        emit(sidebar, "sidebar-change", { expanded: sidebar.dataset.gtcCollapsed !== "true" });
-      }
+      if (sidebar) toggleSidebar(sidebar, toggle);
     }
     document.querySelectorAll("[data-gtc-dropdown]").forEach(root => {
       if (!root.contains(event.target)) closeMenu(root);
@@ -299,7 +382,7 @@
     if (closeToast) dismissToast(closeToast.closest("[data-gtc-toast]")?.id);
   });
 
-  function toast(message, { tone = "neutral", duration = 0, region, closeLabel = "Dispensar notificação" } = {}) {
+  function toast(message, { tone = "neutral", duration = 0, region, closeLabel } = {}) {
     const target = region ? document.getElementById(region) : document.querySelector("[data-gtc-toasts]");
     if (!target?.matches("[data-gtc-toasts]")) throw new Error("GTC: região Toast não encontrada");
     const node = document.createElement("div");
@@ -313,7 +396,7 @@
     close.type = "button";
     close.className = "gtc-toast-close";
     close.dataset.gtcToastClose = "";
-    close.setAttribute("aria-label", closeLabel);
+    close.setAttribute("aria-label", closeLabel || target.dataset.gtcToastCloseLabel || "Dispensar notificação");
     close.textContent = "×";
     node.append(text, close);
     toastReturns.set(node, document.activeElement);
@@ -367,6 +450,17 @@
         if (!target.isConnected) {
           request.controller.abort();
           partialRequests.delete(target);
+        }
+      }
+      for (const [sidebar, state] of sidebarModals) {
+        if (!sidebar.isConnected) {
+          mobileSidebar.removeEventListener("change", state.updateViewport);
+          sidebar.removeEventListener("click", state.onNavigate);
+          state.dialog.remove();
+          state.marker.remove();
+          sidebarModals.delete(sidebar);
+          initialized.delete(sidebar);
+          syncScrollLock();
         }
       }
     }).observe(document.documentElement, { childList: true, subtree: true });

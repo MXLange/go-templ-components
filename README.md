@@ -2,7 +2,7 @@
 
 Biblioteca de componentes para Go + Templ. Inclui CSS personalizável e interações com JavaScript nativo.
 
-O módulo usa o caminho `github.com/MXLange/go-templ-components`. A versão inicial preparada é `v0.1.0`.
+O módulo usa o caminho `github.com/MXLange/go-templ-components`. Versão: `v0.1.0`.
 
 ## Executar o catálogo
 
@@ -28,10 +28,10 @@ go run ./cmd/catalog -addr 0.0.0.0:8080
 
 ## Usar em outro projeto
 
-Após publicar o módulo, instale com:
+Instale a versão com:
 
 ```sh
-go get github.com/MXLange/go-templ-components
+go get github.com/MXLange/go-templ-components@v0.1.0
 ```
 
 Durante o desenvolvimento local, use um `replace` no projeto consumidor:
@@ -134,6 +134,97 @@ O catálogo demonstra esse fluxo com `?page=1`, `?page=2` e `?page=3`.
 
 `Card.Title` gera um `h3`. Para outra hierarquia, omita `Title` e componha o cabeçalho como conteúdo.
 `Select` usa o elemento nativo. Dropdown aceita um único nível de itens.
+
+## Idiomas
+
+Todos os textos e nomes acessíveis fornecidos pela biblioteca são configuráveis por `Messages`.
+O padrão é pt-BR. `PTBRMessages()` e `EnglishMessages()` retornam cópias independentes dos dicionários.
+
+Para definir o idioma por requisição:
+
+```go
+ctx := ui.WithMessages(r.Context(), ui.EnglishMessages())
+templ.Handler(page()).ServeHTTP(w, r.WithContext(ctx))
+```
+
+Para substituir textos em uma instância:
+
+```templ
+@ui.Pagination(ui.PaginationProps{
+    BaseProps: ui.BaseProps{
+        Messages: &ui.Messages{PaginationNext: "Continue"},
+    },
+    Items: pages,
+})
+```
+
+A ordem de precedência é: propriedade específica, mensagens da instância, mensagens do contexto e padrão pt-BR.
+Por exemplo, `DialogProps.CloseLabel` prevalece sobre `Messages.DialogClose`.
+Campos vazios preservam a mensagem anterior. Não existe configuração mutável global no servidor.
+
+| Grupo | Campos de `Messages` |
+| --- | --- |
+| Conteúdo | `DialogClose`, `TabsLabel`, `TableLabel` |
+| Navegação | `SidebarLabel`, `SidebarClose`, `BreadcrumbLabel`, `PaginationLabel` |
+| Paginação | `PaginationFirst`, `PaginationPrevious`, `PaginationNext`, `PaginationLast` |
+| JavaScript | `ToastLabel`, `ToastClose`, `PartialError` |
+
+Os componentes fornecem as mensagens necessárias ao runtime por atributos `data-gtc-*`.
+`GTC.toast` usa a mensagem de fechamento da região escolhida. A opção `closeLabel` permite substituí-la.
+A atualização parcial usa `PartialError` do link ou da paginação que iniciou a requisição.
+
+O projeto consumidor traduz seu próprio conteúdo, incluindo dados, rótulos e mensagens de validação.
+Ele também define `lang` no HTML e aplica o mesmo contexto às respostas completas e parciais.
+Os exemplos de idiomas do catálogo fazem essa configuração por região.
+
+## Sidebar móvel
+
+Use `MobileModal: true` para abrir a Sidebar como painel modal em telas com até 800 pixels:
+
+```templ
+@ui.SidebarToggle(ui.SidebarToggleProps{Target: "navigation"}) { Menu }
+@ui.Sidebar(ui.SidebarProps{
+    BaseProps: ui.BaseProps{ID: "navigation"},
+    Label: "Navegação principal",
+    MobileModal: true,
+}) {
+    <nav aria-label="Principal"><a href="/">Início</a></nav>
+}
+```
+
+O painel começa fechado no mobile. O runtime move o mesmo `aside` para um `<dialog>` nativo.
+O modal usa backdrop, foco contido e bloqueio da rolagem do documento.
+Escape, botão de fechamento, clique no backdrop e seleção de um link fecham o painel.
+O foco retorna ao trigger com `preventScroll`.
+
+Ao voltar para desktop, o runtime restaura os mesmos nós e o estado desktop anterior.
+O estado mantém `aria-expanded`, `inert` e `gtc:sidebar-change` sincronizados.
+Sem `MobileModal`, a Sidebar continua como navegação recolhível.
+
+## Componentes dinâmicos
+
+O runtime observa inserções no DOM. Não é necessário recriar listeners da biblioteca após cada atualização.
+Use templates renderizados pelo Templ para criar conteúdo dinâmico:
+
+```js
+const host = document.getElementById("dynamic-host");
+const template = document.getElementById("dynamic-component-template");
+
+host.replaceChildren(template.content.cloneNode(true));
+GTC.init(host); // Opcional e idempotente.
+
+document.addEventListener("gtc:tabs-change", event => {
+  if (host.contains(event.target)) {
+    console.log(event.detail.index);
+  }
+});
+
+// Remove os componentes da região.
+host.replaceChildren();
+```
+
+O catálogo inclui esses controles na seção “JavaScript dinâmico”.
+Os exemplos de idiomas também demonstram componentes recebidos por atualização parcial.
 
 ## Navegação completa e atualização parcial
 
@@ -404,17 +495,19 @@ Para executar os testes de navegador:
 
 ```sh
 npm ci
-npx playwright install chromium
+npx playwright install --with-deps chromium firefox webkit
 npm test
 ```
 
-Playwright inicia o catálogo em `127.0.0.1:18080`. Os testes usam Chromium e axe-core.
+Playwright inicia o catálogo em `127.0.0.1:18080`. Os testes usam Chromium, Firefox, WebKit e axe-core.
 Node é necessário apenas para esses testes.
+Para executar um navegador, use `npm test -- --project=firefox`.
+O CI executa os navegadores em jobs separados.
 
 ## Compatibilidade e acessibilidade
 
 O alvo são navegadores atuais com cascade layers, OKLCH, `<dialog>`, `inert` e `MutationObserver`.
-Os testes automatizados cobrem Chromium, teclado, foco, temas, densidades e layout com 320 pixels.
+Os testes automatizados cobrem os três navegadores, teclado, foco, temas, densidades e layout com 320 pixels.
 Também cobrem fragmentos, falhas HTTP, cancelamento, histórico, múltiplas regiões e navegação sem JavaScript.
 Os testes axe verificam os critérios automatizáveis de WCAG AA.
 
@@ -425,3 +518,12 @@ Os controles precisam de rótulos. Após alterar o CSS, verifique contraste, foc
 A avaliação com leitor de tela permanece uma verificação manual.
 
 As fontes IBM Plex pertencem apenas ao catálogo. Sua licença está em `cmd/catalog/static/IBM-Plex-LICENSE.txt`.
+
+## Licença e versões
+
+O código usa a licença MIT, disponível em [LICENSE](LICENSE).
+As fontes IBM Plex preservam sua licença própria.
+
+As versões usam tags SemVer. Fixe a dependência com `go get github.com/MXLange/go-templ-components@v0.1.0`.
+O workflow publica a release GitHub quando uma tag `v*` passa pelos testes Go e pelos três navegadores.
+Antes de criar outra tag, atualize o changelog e `RELEASE_NOTES.md`.

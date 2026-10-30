@@ -95,11 +95,15 @@ Conteúdo e código permanecem alinhados à esquerda.
 - Dropdown: um nível, fechamento por Escape, Tab, seleção ou clique externo.
 - Dialog: modal nativo, ciclo de foco e retorno ao trigger.
 - Sidebar: recolhimento com estado sincronizado e `inert`.
+- Sidebar mobile optativa: painel modal até 800 pixels, com backdrop, foco contido, Escape e retorno ao trigger.
+- O painel reutiliza os mesmos nós e restaura o estado desktop quando o viewport muda.
 - Table: texto à esquerda; números à direita e tabulares.
 - Pagination: centralizada, com primeira, anterior, próxima e última página. Controles indisponíveis ficam desabilitados.
 - Link e Pagination: navegação completa por padrão; atualização parcial optativa por região.
 - Atualização parcial: `aria-busy`, foco no container sem rolagem automática e erro acessível ao lado da região.
 - O catálogo compara navegação completa e parcial em exemplos separados, com dados independentes.
+- Mensagens e nomes acessíveis: pt-BR por padrão; inglês ou overrides pelo contexto e pela instância.
+- O catálogo mantém sua explicação em pt-BR e declara `lang` nos exemplos traduzidos.
 - Toast: texto escapado, anúncio acessível e dispensa manual por padrão.
 - Estados vazio, carregamento e erro aparecem no catálogo.
 
@@ -123,7 +127,7 @@ Sua escolha visual prevalece sobre os padrões deste documento.
 
 - Contraste verificado por axe nos temas light e dark.
 - Densidades compact e comfortable incluídas nos testes.
-- Teclado, foco, Escape e retorno do foco verificados com Playwright.
+- Teclado, foco, Escape e retorno do foco verificados com Playwright em Chromium, Firefox e WebKit.
 - Reflow verificado em viewport de 320 pixels.
 - CSS personalizado verificado sem `!important`.
 - Avaliação manual com leitor de tela pendente.

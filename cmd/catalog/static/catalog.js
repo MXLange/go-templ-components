@@ -50,6 +50,11 @@
     });
   });
   document.addEventListener("click", event => {
+    const localizedToast = event.target.closest("[data-locale-toast]");
+    if (localizedToast) {
+      const region = localizedToast.dataset.localeToast;
+      GTC.toast(region.endsWith("en") ? "Changes saved." : "Alterações salvas.", { region });
+    }
     const button = event.target.closest("[data-demo-toast]");
     if (!button) return;
     const tone = button.dataset.demoToast;
@@ -57,5 +62,22 @@
   });
   document.addEventListener("gtc:dropdown-select", event => {
     document.getElementById("dropdown-result").textContent = `Ação selecionada: ${event.detail.value}.`;
+  });
+  const dynamicHost = document.getElementById("dynamic-host");
+  const dynamicEvents = document.getElementById("dynamic-events");
+  document.getElementById("dynamic-add").addEventListener("click", () => {
+    dynamicHost.replaceChildren(document.getElementById("dynamic-component-template").content.cloneNode(true));
+    dynamicEvents.textContent = "Componente inserido. Selecione uma aba.";
+    dynamicEvents.dataset.eventCount = "0";
+  });
+  document.getElementById("dynamic-init").addEventListener("click", () => GTC.init(dynamicHost));
+  document.getElementById("dynamic-remove").addEventListener("click", () => {
+    dynamicHost.replaceChildren();
+    dynamicEvents.textContent = "Componente removido.";
+  });
+  document.addEventListener("gtc:tabs-change", event => {
+    if (!dynamicHost.contains(event.target)) return;
+    dynamicEvents.dataset.eventCount = String(Number(dynamicEvents.dataset.eventCount) + 1);
+    dynamicEvents.textContent = `Aba selecionada: ${event.detail.index + 1}.`;
   });
 })();
